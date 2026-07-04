@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ManualFitScoring } from "@/components/manual-fit-scoring";
+import { JobPromptGenerator } from "@/components/job-prompt-generator";
 import { getJobPostingById } from "@/lib/job-postings";
 
 export const dynamic = "force-dynamic";
@@ -134,6 +135,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
       <DetailSection title="Fit score">
         <ManualFitScoring currentFitScore={job.fitScore} />
+      </DetailSection>
+
+      <DetailSection title="Prompt Generator">
+        <JobPromptGenerator job={job} />
       </DetailSection>
 
       <DetailSection title="Application status">
