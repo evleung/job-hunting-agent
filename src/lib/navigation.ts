@@ -27,5 +27,13 @@ export const appSections: AppSection[] = [
   {
     title: "Interviews",
     href: "/interviews"
+  },
+  {
+    title: "Contacts",
+    href: "/contacts"
+  },
+  {
+    title: "Follow-Ups",
+    href: "/follow-ups"
   }
 ];
