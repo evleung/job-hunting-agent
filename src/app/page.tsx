@@ -62,6 +62,17 @@ export default function DashboardPage() {
             review notes easy to copy.
           </p>
         </Link>
+
+        <Link
+          href="/interviews"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Interviews</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Prepare likely questions, talking points, STAR stories, risk areas,
+            and follow-up drafts.
+          </p>
+        </Link>
       </div>
     </section>
   );
