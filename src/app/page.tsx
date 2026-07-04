@@ -49,6 +49,19 @@ export default function DashboardPage() {
             and local file reference.
           </p>
         </Link>
+
+        <Link
+          href="/application-answers"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">
+            Application Answers
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Keep reusable question drafts, final answers, tone guidance, and
+            review notes easy to copy.
+          </p>
+        </Link>
       </div>
     </section>
   );
