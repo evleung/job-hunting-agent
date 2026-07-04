@@ -8,7 +8,8 @@ safe to evolve without adding unnecessary infrastructure.
 
 - The app uses TypeScript types and mock data files.
 - JSON export exists for the current mock datasets.
-- There is no database, ORM, authentication, server API, or import flow yet.
+- Prisma and SQLite have been introduced as the first local database schema.
+- There is no authentication, server API, or import flow yet.
 - The first real persistence layer should support local use before any hosted
   or API-backed setup.
 
@@ -24,12 +25,14 @@ safe to evolve without adding unnecessary infrastructure.
 
 ## Recommendation
 
-For the next phase, use **SQLite with Drizzle** as the main persistence path.
+The earlier planning recommendation was **SQLite with Drizzle**. The current
+implementation uses **SQLite with Prisma** because GitHub Issue 13 explicitly
+requested Prisma.
 
-SQLite is the best fit for this app because it is local-first, durable, easy to
-back up, and does not require a hosted database. Drizzle is a good first ORM
-choice because it keeps the schema close to TypeScript, avoids heavy abstraction,
-and should be easier to review in small Codex-generated changes.
+SQLite remains the best fit for this app because it is local-first, durable,
+easy to back up, and does not require a hosted database. Prisma is acceptable
+for this phase because it provides a clear schema file, migrations, generated
+client types, and a familiar seed workflow.
 
 Keep **JSON export** as the backup and portability format. Add JSON import only
 after the data model stabilizes enough to validate incoming records safely.
@@ -74,8 +77,37 @@ Prisma is mature and has excellent tooling, but it adds generated client code
 and a larger abstraction surface. It is a reasonable option, but may be more
 than this personal MVP needs right now.
 
-Prisma becomes more attractive if the app later targets a hosted database or
-needs a very familiar migration workflow.
+Prisma becomes more attractive if the app later targets a hosted database,
+needs a familiar migration workflow, or benefits from generated query types.
+
+## Prisma setup
+
+Create a local `.env` file based on `.env.example`:
+
+```bash
+DATABASE_URL="file:./dev.db"
+```
+
+Generate the Prisma client:
+
+```bash
+npm run prisma:generate
+```
+
+Create and apply a local SQLite migration:
+
+```bash
+npm run prisma:migrate -- --name init
+```
+
+Seed the database from the existing mock data:
+
+```bash
+npm run seed
+```
+
+The local SQLite database file should not be committed. `.gitignore` excludes
+common local SQLite database files.
 
 ### Drizzle
 
@@ -98,8 +130,8 @@ helpers.
    datasets are added.
 
 3. **localStorage or SQLite**
-   Use localStorage only for temporary draft state if needed. Prefer SQLite with
-   Drizzle for durable application data once create/edit flows need to survive
+   Use localStorage only for temporary draft state if needed. Use SQLite with
+   Prisma for durable application data once create/edit flows need to survive
    browser refreshes and app restarts.
 
 4. **Optional API-backed persistence later**
@@ -111,12 +143,11 @@ helpers.
 
 The next persistence-related issue should be:
 
-**Add a SQLite + Drizzle proof of concept for jobs only.**
+**Read jobs from SQLite through Prisma on the Jobs page.**
 
 Scope it narrowly:
 
-- Add the database and Drizzle dependencies.
-- Define a `jobs` table.
-- Seed or migrate the current mock jobs.
+- Keep the existing mock data as a fallback if the database is unavailable.
 - Read jobs from SQLite on the Jobs page.
-- Leave all other entities on mock data until the pattern is reviewed.
+- Leave all other entities on mock data until the Prisma read pattern is
+  reviewed.

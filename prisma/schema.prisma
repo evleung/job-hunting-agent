@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id            String   @id
+  name          String   @unique
+  website       String?
+  industry      String?
+  sizeOrStage   String?
+  location      String?
+  notes         String?
+  priorityLevel String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  jobs                 JobPosting[]
+  applications         Application[]
+  applicationAnswers   ApplicationAnswer[]
+  interviewPrepRecords InterviewPrep[]
+  contacts             Contact[]
+  followUpTasks        FollowUpTask[]
+}
+
+model JobPosting {
+  id              String   @id
+  companyId       String
+  companyName     String
+  roleTitle       String
+  jobUrl          String?
+  location        String
+  workArrangement String
+  compensation    String?
+  status          String
+  priority        String
+  fitScore        Int?
+  jobDescription  String
+  resumeVersion   String?
+  notes           String?
+  nextAction      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id])
+  applications Application[]
+  fitScores    FitScore[]
+
+  @@index([companyId])
+}
+
+model Application {
+  id                String    @id
+  companyId         String
+  company           String
+  roleTitle         String
+  relatedJobId      String
+  dateApplied       DateTime?
+  status            String
+  resumeVersionUsed String
+  applicationSource String
+  nextFollowUpDate  DateTime?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  companyRecord Company    @relation(fields: [companyId], references: [id])
+  relatedJob    JobPosting @relation(fields: [relatedJobId], references: [id])
+
+  @@index([companyId])
+  @@index([relatedJobId])
+}
+
+model ResumeVersion {
+  id               String   @id
+  name             String
+  targetRoleType   String
+  resumeLength     String
+  positioningAngle String
+  bestFitRoles     String
+  keyStrengths     String
+  fileReference    String
+  lastUpdatedDate  DateTime
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model ApplicationAnswer {
+  id              String   @id
+  companyId       String?
+  questionType    String
+  questionText    String
+  company         String
+  relatedRole     String
+  draftAnswer     String
+  finalAnswer     String?
+  tone            String
+  wordCountTarget String
+  status          String
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  companyRecord Company? @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model InterviewPrep {
+  id                 String   @id
+  companyId          String
+  company            String
+  roleTitle          String
+  interviewStage     String
+  interviewerName    String
+  interviewDate      DateTime
+  likelyQuestions    String
+  keyTalkingPoints   String
+  starStoriesToUse   String
+  riskAreasOrGaps    String
+  questionsToAsk     String
+  followUpEmailDraft String
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  companyRecord Company @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model Contact {
+  id                String    @id
+  companyId         String
+  name              String
+  company           String
+  roleTitle         String
+  email             String?
+  linkedInUrl       String?
+  relationshipType  String
+  lastContactedDate DateTime?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  companyRecord Company @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model FollowUpTask {
+  id             String   @id
+  companyId      String
+  relatedCompany String
+  relatedRole    String
+  relatedContact String
+  dueDate        DateTime
+  taskType       String
+  status         String
+  messageDraft   String
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  companyRecord Company @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model PromptTemplate {
+  id               String   @id
+  name             String
+  workflowCategory String
+  description      String
+  promptBody       String
+  inputsRequired   String
+  outputExpected   String
+  lastUpdatedDate  DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model FitScore {
+  id                    String   @id
+  jobPostingId          String
+  roleFit               Int
+  seniorityFit          Int
+  domainFit             Int
+  technicalFit          Int
+  customerFacingFit     Int
+  aiDataRelevance       Int
+  compensationPotential Int
+  interviewProbability  Int
+  resumeAlignment       Int
+  networkingOpportunity Int
+  longTermUpside        Int
+  screenOutRisk         Int
+  overallScore          Int
+  tier                  String
+  recommendedAction     String
+  notes                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id])
+
+  @@index([jobPostingId])
+}
