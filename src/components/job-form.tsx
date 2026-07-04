@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { deleteJobAction, saveJobAction } from "@/app/jobs/actions";
 import type {
   JobPosting,
   JobPriority,
@@ -194,18 +196,22 @@ function TextArea({
 }
 
 export function JobForm({ mode, initialJob }: JobFormProps) {
+  const router = useRouter();
   const [values, setValues] = useState<JobFormValues>(() =>
     createInitialValues(initialJob)
   );
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [submittedJob, setSubmittedJob] = useState<JobPosting | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const formTitle = mode === "create" ? "Add job" : "Edit job draft";
-  const submitLabel = mode === "create" ? "Preview job" : "Preview changes";
+  const formTitle = mode === "create" ? "Add job" : "Edit job";
+  const submitLabel = mode === "create" ? "Save job" : "Save changes";
 
   const persistenceNote = useMemo(
     () =>
-      "Temporary local behavior: submitting this form validates the fields, logs the job payload to the browser console, and shows a preview. Database persistence will come later.",
+      "This form now saves to the local SQLite database. If saving fails, the form will keep a local preview so you do not lose the entered details.",
     []
   );
 
@@ -242,10 +248,11 @@ export function JobForm({ mode, initialJob }: JobFormProps) {
     };
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate(values);
     setErrors(nextErrors);
+    setFormError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       setSubmittedJob(null);
@@ -253,8 +260,62 @@ export function JobForm({ mode, initialJob }: JobFormProps) {
     }
 
     const job = buildJobPosting();
-    console.log("Temporary job form submission", job);
-    setSubmittedJob(job);
+    setIsSaving(true);
+
+    const result = await saveJobAction({
+      id: initialJob?.id,
+      company: job.company,
+      roleTitle: job.roleTitle,
+      jobUrl: job.jobUrl,
+      location: job.location,
+      workArrangement: job.workArrangement,
+      compensation: job.compensation,
+      status: job.status,
+      priority: job.priority,
+      fitScore: job.fitScore,
+      jobDescription: job.jobDescription,
+      notes: job.notes,
+      nextAction: job.nextAction,
+      resumeVersion: job.resumeVersion
+    });
+
+    setIsSaving(false);
+
+    if (!result.ok) {
+      setFormError(result.error);
+      setSubmittedJob(job);
+      return;
+    }
+
+    router.push(`/jobs/${result.jobId}`);
+    router.refresh();
+  }
+
+  async function handleDelete() {
+    if (!initialJob) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Delete this job? This only works when the job has no dependent application or fit-score records."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setFormError(null);
+    setIsDeleting(true);
+    const result = await deleteJobAction(initialJob.id);
+    setIsDeleting(false);
+
+    if (!result.ok) {
+      setFormError(result.error);
+      return;
+    }
+
+    router.push("/jobs");
+    router.refresh();
   }
 
   return (
@@ -262,8 +323,7 @@ export function JobForm({ mode, initialJob }: JobFormProps) {
       <div>
         <h2 className="text-3xl font-semibold text-slate-950">{formTitle}</h2>
         <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-          Capture the core details now. Saving to local persistence is planned
-          for a later issue.
+          Capture the core details and save them to the local SQLite database.
         </p>
       </div>
 
@@ -275,6 +335,12 @@ export function JobForm({ mode, initialJob }: JobFormProps) {
         className="space-y-6 rounded-lg border border-slate-200 bg-white p-5"
         onSubmit={handleSubmit}
       >
+        {formError ? (
+          <div className="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {formError}
+          </div>
+        ) : null}
+
         {errors.source ? (
           <div className="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             {errors.source}
@@ -370,20 +436,31 @@ export function JobForm({ mode, initialJob }: JobFormProps) {
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="submit"
+            disabled={isSaving || isDeleting}
             className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
-            {submitLabel}
+            {isSaving ? "Saving..." : submitLabel}
           </button>
+          {mode === "edit" && initialJob ? (
+            <button
+              type="button"
+              disabled={isSaving || isDeleting}
+              onClick={handleDelete}
+              className="rounded-md border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
+            >
+              {isDeleting ? "Deleting..." : "Delete job"}
+            </button>
+          ) : null}
           <p className="text-sm text-slate-500">
-            This does not save yet. It prepares the create/edit workflow.
+            Saved jobs redirect to their detail page.
           </p>
         </div>
       </form>
 
       {submittedJob ? (
-        <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <section className="rounded-lg border border-amber-200 bg-amber-50 p-5">
           <h3 className="text-lg font-semibold text-slate-950">
-            Submitted preview
+            Unsaved local preview
           </h3>
           <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
             <div>
