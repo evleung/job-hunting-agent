@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { findJobPosting, mockJobs } from "@/data/mock-jobs";
+import { ManualFitScoring } from "@/components/manual-fit-scoring";
 
 type JobDetailPageProps = {
   params: Promise<{
@@ -106,9 +107,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
       </DetailSection>
 
       <DetailSection title="Fit score">
-        <p className="text-slate-950">
-          {job.fitScore ? `${job.fitScore}/100` : "Not scored yet"}
-        </p>
+        <ManualFitScoring currentFitScore={job.fitScore} />
       </DetailSection>
 
       <DetailSection title="Application status">
