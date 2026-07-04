@@ -35,5 +35,9 @@ export const appSections: AppSection[] = [
   {
     title: "Follow-Ups",
     href: "/follow-ups"
+  },
+  {
+    title: "Prompt Library",
+    href: "/prompt-library"
   }
 ];

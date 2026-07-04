@@ -94,6 +94,17 @@ export default function DashboardPage() {
             steps visible.
           </p>
         </Link>
+
+        <Link
+          href="/prompt-library"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Prompt Library</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Store copyable prompts for scoring, resumes, answers, interviews,
+            outreach, and follow-ups.
+          </p>
+        </Link>
       </div>
     </section>
   );
