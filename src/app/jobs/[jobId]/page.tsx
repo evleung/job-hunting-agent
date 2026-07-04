@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { findJobPosting, mockJobs } from "@/data/mock-jobs";
 import { ManualFitScoring } from "@/components/manual-fit-scoring";
+import { getJobPostingById } from "@/lib/job-postings";
+
+export const dynamic = "force-dynamic";
 
 type JobDetailPageProps = {
   params: Promise<{
@@ -31,15 +33,39 @@ function Field({ label, value }: { label: string; value?: string | number }) {
   );
 }
 
-export function generateStaticParams() {
-  return mockJobs.map((job) => ({
-    jobId: job.id
-  }));
-}
-
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const { jobId } = await params;
-  const job = findJobPosting(jobId);
+  let job = null;
+  let loadError = false;
+
+  try {
+    job = await getJobPostingById(jobId);
+  } catch (error) {
+    console.error("Failed to load job from SQLite", error);
+    loadError = true;
+  }
+
+  if (loadError) {
+    return (
+      <section className="space-y-6">
+        <Link
+          href="/jobs"
+          className="text-sm font-medium text-slate-600 hover:text-slate-950"
+        >
+          Back to jobs
+        </Link>
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-6">
+          <h2 className="text-2xl font-semibold text-rose-950">
+            Could not load job
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-rose-700">
+            Check that the local SQLite database has been initialized and
+            seeded, then refresh this page.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   if (!job) {
     return (
@@ -55,7 +81,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             Job not found
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            This mock job ID does not match any saved posting.
+            This job ID does not match any database-backed posting.
           </p>
         </div>
       </section>
