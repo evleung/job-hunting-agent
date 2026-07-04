@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ExportDataButton } from "@/components/export-data-button";
 
 export default function DashboardPage() {
   return (
@@ -106,6 +107,25 @@ export default function DashboardPage() {
           </p>
         </Link>
       </div>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Backup
+            </p>
+            <h3 className="mt-1 text-xl font-semibold text-slate-950">
+              Export current mock data
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              Download a JSON snapshot of the current mock datasets. This does
+              not include database records because persistence has not been
+              added yet.
+            </p>
+          </div>
+          <ExportDataButton />
+        </div>
+      </section>
     </section>
   );
 }
