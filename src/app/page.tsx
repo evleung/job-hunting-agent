@@ -16,16 +16,29 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <Link
-        href="/jobs"
-        className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
-      >
-        <h3 className="font-semibold text-slate-950">Jobs</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
-          Review saved job postings and compare priority, status, compensation,
-          and fit score.
-        </p>
-      </Link>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/jobs"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Jobs</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Review saved job postings and compare priority, status,
+            compensation, and fit score.
+          </p>
+        </Link>
+
+        <Link
+          href="/applications"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Applications</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Track application status, resume versions, sources, follow-ups, and
+            notes.
+          </p>
+        </Link>
+      </div>
     </section>
   );
 }
