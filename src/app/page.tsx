@@ -73,6 +73,27 @@ export default function DashboardPage() {
             and follow-up drafts.
           </p>
         </Link>
+
+        <Link
+          href="/contacts"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Contacts</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Track recruiters, hiring managers, referrals, and networking notes.
+          </p>
+        </Link>
+
+        <Link
+          href="/follow-ups"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Follow-Ups</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Keep follow-up dates, message drafts, related contacts, and next
+            steps visible.
+          </p>
+        </Link>
       </div>
     </section>
   );
