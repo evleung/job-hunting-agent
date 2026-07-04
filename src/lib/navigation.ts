@@ -23,5 +23,9 @@ export const appSections: AppSection[] = [
   {
     title: "Application Answers",
     href: "/application-answers"
+  },
+  {
+    title: "Interviews",
+    href: "/interviews"
   }
 ];
