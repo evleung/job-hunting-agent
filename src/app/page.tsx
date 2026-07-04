@@ -38,6 +38,17 @@ export default function DashboardPage() {
             notes.
           </p>
         </Link>
+
+        <Link
+          href="/resume-versions"
+          className="block rounded-lg border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+        >
+          <h3 className="font-semibold text-slate-950">Resume Versions</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Compare resume variants by target role, positioning angle, strengths,
+            and local file reference.
+          </p>
+        </Link>
       </div>
     </section>
   );
