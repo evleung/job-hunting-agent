@@ -78,14 +78,21 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           {job.roleTitle}
         </h2>
         <p className="mt-3 text-base text-slate-600">
-          {job.location} · {job.workArrangement}
+          {job.location} - {job.workArrangement}
         </p>
+        <Link
+          href={`/jobs/${job.id}/edit`}
+          className="mt-4 inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          Edit draft
+        </Link>
       </div>
 
       <DetailSection title="Overview">
         <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Company" value={job.company} />
           <Field label="Role title" value={job.roleTitle} />
+          <Field label="Job URL" value={job.jobUrl} />
           <Field label="Location" value={job.location} />
           <Field label="Work arrangement" value={job.workArrangement} />
           <Field label="Compensation" value={job.compensation} />

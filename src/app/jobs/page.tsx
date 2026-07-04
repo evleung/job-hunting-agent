@@ -21,13 +21,23 @@ export default function JobsPage() {
         <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
           Jobs
         </p>
-        <h2 className="mt-2 text-3xl font-semibold text-slate-950">
-          Mock job postings
-        </h2>
-        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-          A starter list for evaluating promising AI/product roles before adding
-          persistence, forms, or automation.
-        </p>
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="text-3xl font-semibold text-slate-950">
+              Mock job postings
+            </h2>
+            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+              A starter list for evaluating promising AI/product roles before
+              adding persistence, forms, or automation.
+            </p>
+          </div>
+          <Link
+            href="/jobs/new"
+            className="inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            Add job
+          </Link>
+        </div>
       </div>
 
       {mockJobs.length === 0 ? (
@@ -55,7 +65,7 @@ export default function JobsPage() {
                     {job.roleTitle}
                   </h3>
                   <p className="mt-2 text-sm text-slate-600">
-                    {job.location} · {job.workArrangement}
+                    {job.location} - {job.workArrangement}
                   </p>
                 </div>
 
