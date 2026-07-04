@@ -14,6 +14,7 @@ export type JobPosting = {
   id: string;
   company: string;
   roleTitle: string;
+  jobUrl?: string;
   location: string;
   workArrangement: WorkArrangement;
   compensation?: string;
